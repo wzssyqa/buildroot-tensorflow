@@ -1,0 +1,213 @@
+From c59f629e46c1df3a1faf03259a907039060a21ac Mon Sep 17 00:00:00 2001
+From: Your Name <you@example.com>
+Date: Thu, 1 Nov 2018 03:42:19 +0000
+Subject: [PATCH] support-install
+
+---
+ CMake/AbseilHelpers.cmake           | 4 ++++
+ absl/algorithm/CMakeLists.txt       | 2 +-
+ absl/base/CMakeLists.txt            | 2 +-
+ absl/container/CMakeLists.txt       | 2 +-
+ absl/debugging/CMakeLists.txt       | 1 +
+ absl/hash/CMakeLists.txt            | 1 +
+ absl/memory/CMakeLists.txt          | 1 +
+ absl/meta/CMakeLists.txt            | 1 +
+ absl/numeric/CMakeLists.txt         | 1 +
+ absl/strings/CMakeLists.txt         | 1 +
+ absl/synchronization/CMakeLists.txt | 1 +
+ absl/time/CMakeLists.txt            | 1 +
+ absl/types/CMakeLists.txt           | 1 +
+ absl/utility/CMakeLists.txt         | 1 +
+ 14 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/CMake/AbseilHelpers.cmake b/CMake/AbseilHelpers.cmake
+index d487036..66b16df 100644
+--- a/CMake/AbseilHelpers.cmake
++++ b/CMake/AbseilHelpers.cmake
+@@ -60,6 +60,8 @@ function(absl_library)
+   if(ABSL_LIB_EXPORT_NAME)
+     add_library(absl::${ABSL_LIB_EXPORT_NAME} ALIAS ${_NAME})
+   endif()
++
++  install(TARGETS ${_NAME} DESTINATION lib)
+ endfunction()
+ 
+ #
+@@ -163,6 +165,7 @@ function(absl_cc_library)
+     if(ABSL_CC_LIB_PUBLIC)
+       add_library(absl::${ABSL_CC_LIB_NAME} ALIAS ${_NAME})
+     endif()
++    install(TARGETS ${_NAME} DESTINATION lib)
+   endif()
+ endfunction()
+ 
+@@ -209,6 +212,7 @@ function(absl_header_library)
+     add_library(absl::${ABSL_HO_LIB_EXPORT_NAME} ALIAS ${_NAME})
+   endif()
+ 
++  install(TARGETS ${_NAME} DESTINATION lib)
+ endfunction()
+ 
+ 
+diff --git a/absl/algorithm/CMakeLists.txt b/absl/algorithm/CMakeLists.txt
+index fdf45c5..d37a63b 100644
+--- a/absl/algorithm/CMakeLists.txt
++++ b/absl/algorithm/CMakeLists.txt
+@@ -18,7 +18,7 @@ list(APPEND ALGORITHM_PUBLIC_HEADERS
+   "algorithm.h"
+   "container.h"
+ )
+-
++install(FILES ${ALGORITHM_PUBLIC_HEADERS} DESTINATION include/absl/algorithm)
+ 
+ #
+ ## TESTS
+diff --git a/absl/base/CMakeLists.txt b/absl/base/CMakeLists.txt
+index 3c580d4..50343d7 100644
+--- a/absl/base/CMakeLists.txt
++++ b/absl/base/CMakeLists.txt
+@@ -27,7 +27,7 @@ list(APPEND BASE_PUBLIC_HEADERS
+   "port.h"
+   "thread_annotations.h"
+ )
+-
++install(FILES ${BASE_PUBLIC_HEADERS} DESTINATION include/absl/base)
+ 
+ list(APPEND BASE_INTERNAL_HEADERS
+   "internal/atomic_hook.h"
+diff --git a/absl/container/CMakeLists.txt b/absl/container/CMakeLists.txt
+index 72113e1..e4a8d79 100644
+--- a/absl/container/CMakeLists.txt
++++ b/absl/container/CMakeLists.txt
+@@ -23,7 +23,7 @@ list(APPEND CONTAINER_PUBLIC_HEADERS
+   "node_hash_map.h"
+   "node_hash_set.h"
+ )
+-
++install(FILES ${CONTAINER_PUBLIC_HEADERS} DESTINATION include/absl/container)
+ 
+ list(APPEND CONTAINER_INTERNAL_HEADERS
+   "internal/compressed_tuple.h"
+diff --git a/absl/debugging/CMakeLists.txt b/absl/debugging/CMakeLists.txt
+index 266c2ca..a3349aa 100644
+--- a/absl/debugging/CMakeLists.txt
++++ b/absl/debugging/CMakeLists.txt
+@@ -20,6 +20,7 @@ list(APPEND DEBUGGING_PUBLIC_HEADERS
+   "stacktrace.h"
+   "symbolize.h"
+ )
++install(FILES ${DEBUGGING_PUBLIC_HEADERS} DESTINATION include/absl/debugging)
+ 
+ # TODO(cohenjon) The below is all kinds of wrong.  Make this match what we do in
+ # Bazel
+diff --git a/absl/hash/CMakeLists.txt b/absl/hash/CMakeLists.txt
+index 474092f..b1e4c02 100644
+--- a/absl/hash/CMakeLists.txt
++++ b/absl/hash/CMakeLists.txt
+@@ -17,6 +17,7 @@
+ list(APPEND HASH_PUBLIC_HEADERS
+   "hash.h"
+ )
++install(FILES ${HASH_PUBLIC_HEADERS} DESTINATION include/absl/hash)
+ 
+ list(APPEND HASH_INTERNAL_HEADERS
+   "internal/city.h"
+diff --git a/absl/memory/CMakeLists.txt b/absl/memory/CMakeLists.txt
+index 8f9e731..fd697f8 100644
+--- a/absl/memory/CMakeLists.txt
++++ b/absl/memory/CMakeLists.txt
+@@ -17,6 +17,7 @@
+ list(APPEND MEMORY_PUBLIC_HEADERS
+   "memory.h"
+ )
++install(FILES ${MEMORY_PUBLIC_HEADERS} DESTINATION include/absl/memory)
+ 
+ 
+ absl_header_library(
+diff --git a/absl/meta/CMakeLists.txt b/absl/meta/CMakeLists.txt
+index adb0ceb..0f5d87a 100644
+--- a/absl/meta/CMakeLists.txt
++++ b/absl/meta/CMakeLists.txt
+@@ -17,6 +17,7 @@
+ list(APPEND META_PUBLIC_HEADERS
+   "type_traits.h"
+ )
++install(FILES ${META_PUBLIC_HEADERS} DESTINATION include/absl/meta)
+ 
+ 
+ #
+diff --git a/absl/numeric/CMakeLists.txt b/absl/numeric/CMakeLists.txt
+index 3360b2e..29c5ec9 100644
+--- a/absl/numeric/CMakeLists.txt
++++ b/absl/numeric/CMakeLists.txt
+@@ -17,6 +17,7 @@
+ list(APPEND NUMERIC_PUBLIC_HEADERS
+   "int128.h"
+ )
++install(FILES ${NUMERIC_PUBLIC_HEADERS} DESTINATION include/absl/numberic)
+ 
+ 
+ # library 128
+diff --git a/absl/strings/CMakeLists.txt b/absl/strings/CMakeLists.txt
+index dbb6ae6..28640f0 100644
+--- a/absl/strings/CMakeLists.txt
++++ b/absl/strings/CMakeLists.txt
+@@ -29,6 +29,7 @@ list(APPEND STRINGS_PUBLIC_HEADERS
+   "str_split.h"
+   "substitute.h"
+ )
++install(FILES ${STRINGS_PUBLIC_HEADERS} DESTINATION include/absl/strings)
+ 
+ 
+ list(APPEND STRINGS_INTERNAL_HEADERS
+diff --git a/absl/synchronization/CMakeLists.txt b/absl/synchronization/CMakeLists.txt
+index de0d7b7..0883d79 100644
+--- a/absl/synchronization/CMakeLists.txt
++++ b/absl/synchronization/CMakeLists.txt
+@@ -20,6 +20,7 @@ list(APPEND SYNCHRONIZATION_PUBLIC_HEADERS
+   "mutex.h"
+   "notification.h"
+ )
++install(FILES ${SYNCHRONIZATION_PUBLIC_HEADERS} DESTINATION include/absl/synchronization)
+ 
+ 
+ list(APPEND SYNCHRONIZATION_INTERNAL_HEADERS
+diff --git a/absl/time/CMakeLists.txt b/absl/time/CMakeLists.txt
+index 53216cd..dfade15 100644
+--- a/absl/time/CMakeLists.txt
++++ b/absl/time/CMakeLists.txt
+@@ -19,6 +19,7 @@ list(APPEND TIME_PUBLIC_HEADERS
+   "clock.h"
+   "time.h"
+ )
++install(FILES ${TIME_PUBLIC_HEADERS} DESTINATION include/absl/time)
+ 
+ 
+ list(APPEND TIME_INTERNAL_HEADERS
+diff --git a/absl/types/CMakeLists.txt b/absl/types/CMakeLists.txt
+index bc6c39e..725032b 100644
+--- a/absl/types/CMakeLists.txt
++++ b/absl/types/CMakeLists.txt
+@@ -22,6 +22,7 @@ list(APPEND TYPES_PUBLIC_HEADERS
+   "span.h"
+   "variant.h"
+ )
++install(FILES ${TYPES_PUBLIC_HEADERS} DESTINATION include/absl/types)
+ 
+ 
+ # any library
+diff --git a/absl/utility/CMakeLists.txt b/absl/utility/CMakeLists.txt
+index dc3a631..29c0d6d 100644
+--- a/absl/utility/CMakeLists.txt
++++ b/absl/utility/CMakeLists.txt
+@@ -18,6 +18,7 @@
+ list(APPEND UTILITY_PUBLIC_HEADERS
+   "utility.h"
+ )
++install(FILES ${UTILITY_PUBLIC_HEADERS} DESTINATION include/absl/utility)
+ 
+ absl_header_library(
+   TARGET
+-- 
+2.19.1
+

@@ -68,6 +68,9 @@ static char *predef_args[] = {
 #ifdef BR_NAN
 	"-mnan=" BR_NAN,
 #endif
+#ifdef BR_MSA
+	"-mmsa",
+#endif
 #ifdef BR_FPU
 	"-mfpu=" BR_FPU,
 #endif

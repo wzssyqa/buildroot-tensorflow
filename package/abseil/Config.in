@@ -1,0 +1,11 @@
+config BR2_PACKAGE_ABSEIL
+	bool "Abseil"
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  Abseil is an open-source collection of C++ code (compliant to C++11)
+          designed to augment the C++ standard library.
+
+	  https://github.com/abseil/abseil-cpp
+
+comment "abseil needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

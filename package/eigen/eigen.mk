@@ -4,9 +4,8 @@
 #
 ################################################################################
 
-EIGEN_VERSION = 3.3.4
-EIGEN_SOURCE = $(EIGEN_VERSION).tar.bz2
-EIGEN_SITE = https://bitbucket.org/eigen/eigen/get
+EIGEN_VERSION = 115d7c7dfe67000660646f20fb74f8c65e05c539
+EIGEN_SITE = $(call github,eigenteam,eigen-git-mirror,$(EIGEN_VERSION))
 EIGEN_LICENSE = MPL2, BSD-3-Clause, LGPL-2.1
 EIGEN_LICENSE_FILES = COPYING.MPL2 COPYING.BSD COPYING.LGPL COPYING.README
 EIGEN_INSTALL_STAGING = YES

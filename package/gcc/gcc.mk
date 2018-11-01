@@ -201,6 +201,9 @@ ifneq ($(GCC_TARGET_NAN),)
 HOST_GCC_COMMON_CONF_OPTS += --with-nan="$(GCC_TARGET_NAN)"
 endif
 endif
+ifeq ($(BR2_MIPS_ENABLE_MSA),y)
+HOST_GCC_COMMON_CONF_OPTS += --with-msa=yes
+endif
 ifneq ($(GCC_TARGET_FP32_MODE),)
 HOST_GCC_COMMON_CONF_OPTS += --with-fp-32="$(GCC_TARGET_FP32_MODE)"
 endif

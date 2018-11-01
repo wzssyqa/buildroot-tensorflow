@@ -1,0 +1,12 @@
+config BR2_PACKAGE_GEMMLOWP
+	bool "gemmlowp"
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  gemmlowp: a small self-contained low-precision GEMM library.
+          This is not a full linear algebra library, only a GEMM library:
+          it only does general matrix multiplication ("GEMM").
+
+          https://github.com/google/gemmlowp
+
+comment "gemmlowp needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

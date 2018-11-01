@@ -1,0 +1,8 @@
+config BR2_PACKAGE_FFT2D
+	bool "fft2d"
+	help
+	  General Purpose FFT (Fast Fourier/Cosine/Sine Transform) Package
+	  A package to calculate Discrete Fourier/Cosine/Sine Transforms of 
+	  1-dimensional sequences of length 2^N.
+
+	  http://www.darwinsys.com/file/

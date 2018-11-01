@@ -1,0 +1,110 @@
+diff --git a/tensorflow/lite/CMakeLists.txt b/tensorflow/lite/CMakeLists.txt
+new file mode 100644
+index 0000000000..1573f442ef
+--- /dev/null
++++ b/tensorflow/lite/CMakeLists.txt
+@@ -0,0 +1,104 @@
++cmake_minimum_required(VERSION 3.6)
++project(tensorflow-lite)
++
++#neon2sse install to /usr/include directly
++#farmhash install to /usr/include directly
++set(INCLUDES "\
++  -I../.. \
++  -I${CROSS_SYSROOT}/${CMAKE_INSTALL_PREFIX}/include \
++  -I${CROSS_SYSROOT}/${CMAKE_INSTALL_PREFIX}/include/eigen \
++  -I${CROSS_SYSROOT}/${CMAKE_INSTALL_PREFIX}/include/absl \
++  -I${CROSS_SYSROOT}/${CMAKE_INSTALL_PREFIX}/include/gemmlowp \
++  -I${CROSS_SYSROOT}/${CMAKE_INSTALL_PREFIX}/include/flatbuffers"
++)
++
++set(LIBS " \
++  -lstdc++ \
++  -lpthread \
++  -lm \
++  -lz \
++  -lfftsg \
++  -lfarmhash"
++)
++
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG --std=c++11 ${INCLUDES}")
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -DNDEBUG ${INCLUDES}")
++set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LIBS}")
++
++list(APPEND PROFILER_SRCS
++  profiling/time.cc
++)
++
++FILE(GLOB TMP
++	*.cc
++	*.c
++	c/*.c
++	core/api/*.cc
++)
++list(APPEND CORE_CC_ALL_SRCS
++  ${TMP}
++)
++
++if(${BUILD_TYPE} NOT STREQUAL micro)
++  FILE(GLOB TMP
++	  kernel/*.cc kernel/*.c
++	  kernel/internal/*.cc kernel/internal/*.c
++	  kernel/internal/optimized/*.cc kernel/internal/optimized/*.c
++	  kernel/internal/reference/*.cc kernel/internal/reference/*.c
++  )
++  list(APPEND CORE_CC_ALL_SRCS
++    ${TMP}
++    ${PROFILER_SRCS}
++  )
++  if(${ENABLE_TESTING})
++    FILE(GLOB TMP
++	  testing/generate_testspec.cc testing/init_tensorflow.cc
++	  testing/message.cc testing/parse_testdata.cc
++	  testing/split.cc testing/tf_driver.cc
++	  testing/tflite_diff_util.cc testing/tflite_driver.cc
++	  testing/tokenize.cc
++    )
++    list(APPEND CORE_CC_ALL_SRCS
++      ${TMP}
++    )
++  endif(${ENABLE_TESTING})
++endif(${BUILD_TYPE} NOT STREQUAL micro)
++
++list(SORT CORE_CC_ALL_SRCS)
++list(REMOVE_DUPLICATES CORE_CC_ALL_SRCS)
++list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX .*test.cc)
++list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX kernels/test_util.cc)
++if("${BUILD_TYPE}" STREQUAL "micro")
++  list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX mmap_allocation.cc)
++  list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX nnapi_delegate.cc)
++  list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX kernels/test_util.cc)
++else("${BUILD_TYPE}" STREQUAL "micro")
++  list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX mmap_allocation_disabled.cc)
++  list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX nnapi_delegate_disabled.cc)
++  if(NOT ${ENABLE_TESTING})
++    list(FILTER CORE_CC_ALL_SRCS EXCLUDE REGEX kernels/test_util.cc)
++  endif(NOT ${ENABLE_TESTING})
++endif("${BUILD_TYPE}" STREQUAL "micro")
++set(TF_LITE_CC_SRCS ${CORE_CC_ALL_SRCS})
++
++add_library(tensorflow-lite SHARED ${TF_LITE_CC_SRCS})
++install(TARGETS tensorflow-lite
++	LIBRARY DESTINATION lib
++)
++install(DIRECTORY c core/api nnapi schema DESTINATION include/tensorflow/lite FILES_MATCHING PATTERN "*.h")
++install(DIRECTORY ./ DESTINATION include/tensorflow/lite FILES_MATCHING PATTERN "*.h")
++if(${BUILD_TYPE} NOT STREQUAL micro)
++  install(DIRECTORY profiling DESTINATION include/tensorflow/lite FILES_MATCHING PATTERN "*.h")
++  if(${ENABLE_TESTING})
++    install(DIRECTORY testing DESTINATION include/tensorflow/lite FILES_MATCHING PATTERN "*.h")
++  endif(${ENABLE_TESTING})
++endif(${BUILD_TYPE} NOT STREQUAL micro)
++
++if(${ENABLE_TESTING})
++  file(GLOB_RECURSE TEST_SRCS . *_test.cc)
++  foreach(tst ${TEST_SRCS})
++    string(REPLACE "_test.cc" "" tgt $tst)
++    add_executable(${tgt} ${tst})
++    install(TARGETS ${tgt} DESTINATION bin)
++  endforeach(tst)
++endif(${ENABLE_TESTING})

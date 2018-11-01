@@ -1,0 +1,33 @@
+config BR2_PACKAGE_TENSORFLOW_LITE
+	bool "TensorFlow Lite"
+	depends on BR2_PACKAGE_EIGEN
+	depends on BR2_PACKAGE_GEMMLOWP
+	depends on BR2_PACKAGE_GTEST
+	depends on BR2_PACKAGE_ABSEIL
+	depends on BR2_PACKAGE_NEON2SSE
+	depends on BR2_PACKAGE_FARMHASH
+	depends on BR2_PACKAGE_FLATBUFFERS
+	depends on BR2_PACKAGE_FFT2D
+	help
+          TensorFlow Lite is the official solution for running
+          machine learning models on mobile and embedded devices.
+          It enables on-device machine learning inference with
+          low latency and a small binary size on Android, iOS,
+          and other operating systems.
+
+	  https://www.tensorflow.org/lite/
+
+if BR2_PACKAGE_TENSORFLOW_LITE
+config BR2_PACKAGE_TENSORFLOW_LITE_MICRO
+	bool "TensorFlow Lite micro build"
+	help
+	  Build the micro version of TensorFlow Lite instead of the full version
+comment "TESTING is disabled for micro building"
+	depends on BR2_PACKAGE_TENSORFLOW_LITE_MICRO
+
+config BR2_PACKAGE_TENSORFLOW_LITE_TESTING
+	bool "Build and install testing binary"
+	depends on !BR2_PACKAGE_TENSORFLOW_LITE_MICRO
+	help
+	  Build the tests and install them
+endif

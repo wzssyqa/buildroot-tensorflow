@@ -1,3 +1,8 @@
+config BR2_MIPS_CPU_MAYBE_HAS_MSA
+	bool
+config BR2_MIPS_CPU_HAS_MSA
+	bool
+
 # mips default CPU ISAs
 config BR2_MIPS_CPU_MIPS32
 	bool
@@ -49,10 +54,12 @@ config BR2_mips_32r5
 	bool "Generic MIPS32R5"
 	depends on !BR2_ARCH_IS_64
 	select BR2_MIPS_CPU_MIPS32R5
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 config BR2_mips_32r6
 	bool "Generic MIPS32R6"
 	depends on !BR2_ARCH_IS_64
 	select BR2_MIPS_CPU_MIPS32R6
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 config BR2_mips_interaptiv
 	bool "interAptiv"
 	depends on !BR2_ARCH_IS_64
@@ -74,6 +81,7 @@ config BR2_mips_p5600
 	depends on !BR2_ARCH_IS_64
 	select BR2_MIPS_CPU_MIPS32R5
 	select BR2_MIPS_NAN_2008
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 config BR2_mips_xburst
 	bool "XBurst"
 	depends on !BR2_ARCH_IS_64
@@ -99,20 +107,24 @@ config BR2_mips_64r5
 	bool "Generic MIPS64R5"
 	depends on BR2_ARCH_IS_64
 	select BR2_MIPS_CPU_MIPS64R5
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 config BR2_mips_64r6
 	bool "Generic MIPS64R6"
 	depends on BR2_ARCH_IS_64
 	select BR2_MIPS_CPU_MIPS64R6
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 config BR2_mips_i6400
 	bool "I6400"
 	depends on BR2_ARCH_IS_64
 	select BR2_MIPS_CPU_MIPS64R6
 	select BR2_ARCH_NEEDS_GCC_AT_LEAST_6
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 config BR2_mips_p6600
 	bool "P6600"
 	depends on BR2_ARCH_IS_64
 	select BR2_ARCH_HAS_NO_TOOLCHAIN_BUILDROOT
 	select BR2_MIPS_CPU_MIPS64R6
+	select BR2_MIPS_CPU_MAYBE_HAS_MSA
 endchoice
 
 choice
@@ -199,6 +211,17 @@ endchoice
 config BR2_GCC_TARGET_NAN
 	default "legacy"	if BR2_MIPS_NAN_LEGACY
 	default "2008"		if BR2_MIPS_NAN_2008
+
+config BR2_MIPS_ENABLE_MSA
+	bool "Enable MSA extension support"
+	depends on BR2_TOOLCHAIN_HAS_MMSA_OPTION
+	depends on !BR2_MIPS_SOFT_FLOAT
+	depends on BR2_MIPS_CPU_MAYBE_HAS_MSA && (BR2_MIPS_FP32_MODE_64 || BR2_MIPS_NABI64 || BR2_MIPS_NABI32)
+	select BR2_MIPS_CPU_HAS_MSA
+	help
+	  For some CPU cores, the MSA extension is optional.
+	  Select this option if you are certain your particular
+	  implementation has MSA support and you want to use it.
 
 config BR2_ARCH
 	default "mips"		if BR2_mips

@@ -1,0 +1,63 @@
+diff --git a/gcc/config.gcc b/gcc/config.gcc
+index 532c33f4c..392301e54 100644
+--- a/gcc/config.gcc
++++ b/gcc/config.gcc
+@@ -4134,7 +4134,7 @@ case "${target}" in
+ 		;;
+ 
+ 	mips*-*-*)
+-		supported_defaults="abi arch arch_32 arch_64 float fpu nan fp_32 odd_spreg_32 tune tune_32 tune_64 divide llsc mips-plt synci lxc1-sxc1 madd4"
++		supported_defaults="abi arch arch_32 arch_64 float fpu nan fp_32 odd_spreg_32 tune tune_32 tune_64 divide llsc mips-plt synci lxc1-sxc1 madd4 msa"
+ 
+ 		case ${with_float} in
+ 		"" | soft | hard)
+@@ -4287,6 +4287,21 @@ case "${target}" in
+ 			exit 1
+ 			;;
+ 		esac
++
++		case ${with_msa} in
++		yes)
++			with_msa=msa
++			;;
++		no)
++			with_msa=no-msa
++			;;
++		"")
++			;;
++		*)
++			echo "Unknown msa type used in --with-msa" 1>&2
++			exit 1
++			;;
++		esac
+ 		;;
+ 
+ 	nds32*-*-*)
+@@ -4778,7 +4793,7 @@ case ${target} in
+ esac
+ 
+ t=
+-all_defaults="abi cpu cpu_32 cpu_64 arch arch_32 arch_64 tune tune_32 tune_64 schedule float mode fpu nan fp_32 odd_spreg_32 divide llsc mips-plt synci tls lxc1-sxc1 madd4"
++all_defaults="abi cpu cpu_32 cpu_64 arch arch_32 arch_64 tune tune_32 tune_64 schedule float mode fpu nan fp_32 odd_spreg_32 divide llsc mips-plt synci tls lxc1-sxc1 madd4 msa"
+ for option in $all_defaults
+ do
+ 	eval "val=\$with_"`echo $option | sed s/-/_/g`
+diff --git a/gcc/doc/install.texi b/gcc/doc/install.texi
+index ec20fd266..af97e57f9 100644
+--- a/gcc/doc/install.texi
++++ b/gcc/doc/install.texi
+@@ -1397,6 +1397,14 @@ unfused is normally expected).  Disabling these instructions is the
+ only way to ensure compatible code is generated; this will incur
+ a performance penalty.
+ 
++@item --with-msa
++On MIPS targets, make @option{-mmsa} the default when no
++@option{-mno-msa} option is passed.
++
++@item --without-msa
++On MIPS targets, make @option{-mno-msa} the default when no
++@option{-mmsa} option is passed.
++
+ @item --with-mips-plt
+ On MIPS targets, make use of copy relocations and PLTs.
+ These features are extensions to the traditional
