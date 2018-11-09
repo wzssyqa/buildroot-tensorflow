@@ -1,0 +1,7 @@
+config BR2_PACKAGE_RE2
+	bool "google re2"
+	help
+	  a regular expression library
+
+	  https://github.com/google/re2
+

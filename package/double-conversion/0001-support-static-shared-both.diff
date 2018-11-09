@@ -1,0 +1,57 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 143c458..4ce9404 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,23 +11,40 @@ set(headers
+     double-conversion/ieee.h
+     double-conversion/strtod.h
+     double-conversion/utils.h)
++set(srcs
++    double-conversion/bignum.cc
++    double-conversion/bignum-dtoa.cc
++    double-conversion/cached-powers.cc
++    double-conversion/diy-fp.cc
++    double-conversion/double-conversion.cc
++    double-conversion/fast-dtoa.cc
++    double-conversion/fixed-dtoa.cc
++    double-conversion/strtod.cc
++)
+ 
+-add_library(double-conversion
+-            double-conversion/bignum.cc
+-            double-conversion/bignum-dtoa.cc
+-            double-conversion/cached-powers.cc
+-            double-conversion/diy-fp.cc
+-            double-conversion/double-conversion.cc
+-            double-conversion/fast-dtoa.cc
+-            double-conversion/fixed-dtoa.cc
+-            double-conversion/strtod.cc
++option(BUILD_SHARED "Build shared library" ON)
++option(BUILD_STATIC "Build static library" ON)
++if(BUILD_SHARED)
++  add_library(double-conversion SHARED
++            ${srcs}
+             ${headers})
+-target_include_directories(
++  target_include_directories(
+     double-conversion PUBLIC
+     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
++  # pick a version #
++  set_property(TARGET double-conversion PROPERTY SOVERSION ${PROJECT_VERSION})
++endif(BUILD_SHARED)
+ 
+-# pick a version #
+-set_property(TARGET double-conversion PROPERTY SOVERSION ${PROJECT_VERSION})
++if(BUILD_STATIC)
++  add_library(double-conversion-static STATIC
++            ${srcs}
++            ${headers})
++  target_include_directories(
++    double-conversion PUBLIC
++    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
++  # pick a version #
++  set_property(TARGET double-conversion-static PROPERTY OUTPUT_NAME double-conversion)
++endif(BUILD_STATIC)
+ 
+ # set up testing if requested
+ option(BUILD_TESTING "Build test programs" OFF)

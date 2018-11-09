@@ -1,0 +1,11 @@
+config BR2_PACKAGE_DOUBLE_CONVERSION
+	bool "binary-decimal and decimal-binary conversion routines"
+	depends on BR2_TOOLCHAIN_GCC_AT_LEAST_4_7 # C++11
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  Provides binary-decimal and decimal-binary routines for IEEE doubles.
+
+	  the library consists of efficient conversion routines
+	  that have been extracted from the V8 JavaScript engine.
+	  The code has been refactored and improved so that 
+	  it can be used more easily in other projects.

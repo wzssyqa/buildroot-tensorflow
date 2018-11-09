@@ -1,0 +1,16 @@
+config BR2_PACKAGE_GRPC
+	bool "gRPC - An RPC library and framework"
+	depends on BR2_TOOLCHAIN_GCC_AT_LEAST_4_7 # C++11
+	depends on BR2_INSTALL_LIBSTDCPP
+	select BR2_PACKAGE_PROTBUF
+	select BR2_PACKAGE_C_ARES
+	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_OPENSSL
+	select BR2_PACKAGE_GFLAGS
+	help
+	  gRPC is a modern, open source, high-performance remote procedure call (RPC)
+	  framework that can run anywhere. 
+	  It enables client and server applications to communicate transparently,
+	  and makes it easier to build connected systems.
+
+	  https://grpc.io/

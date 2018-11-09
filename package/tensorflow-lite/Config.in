@@ -2,7 +2,6 @@ config BR2_PACKAGE_TENSORFLOW_LITE
 	bool "TensorFlow Lite"
 	depends on BR2_PACKAGE_EIGEN
 	depends on BR2_PACKAGE_GEMMLOWP
-	depends on BR2_PACKAGE_GTEST
 	depends on BR2_PACKAGE_ABSEIL
 	depends on BR2_PACKAGE_NEON2SSE
 	depends on BR2_PACKAGE_FARMHASH
@@ -27,6 +26,19 @@ comment "TESTING is disabled for micro building"
 
 config BR2_PACKAGE_TENSORFLOW_LITE_TESTING
 	bool "Build and install testing binary"
+	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_PROTOBUF
+	select BR2_PACKAGE_GTEST
+	select BR2_PACKAGE_GTEST_GMOCK
+	select BR2_PACKAGE_RE2
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_GIFLIB
+	select BR2_PACKAGE_SNAPPY
+	select BR2_PACKAGE_JPEG
+	select BR2_PACKAGE_JPEG_TURBO
+	select BR2_PACKAGE_LIBPNG
+	select BR2_PACKAGE_NSYNC
+	select BR2_PACKAGE_GRPC
 	depends on !BR2_PACKAGE_TENSORFLOW_LITE_MICRO
 	help
 	  Build the tests and install them
