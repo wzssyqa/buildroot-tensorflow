@@ -1,9 +1,9 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 new file mode 100644
-index 0000000000..fd4b3c89ec
+index 0000000000..df32968a7e
 --- /dev/null
 +++ b/CMakeLists.txt
-@@ -0,0 +1,102 @@
+@@ -0,0 +1,103 @@
 +cmake_minimum_required(VERSION 3.6)
 +project(tensorflow-lite)
 +set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -101,8 +101,9 @@ index 0000000000..fd4b3c89ec
 +    set_target_properties(tensorflow-core PROPERTIES LINK_FLAGS "-Wl,--no-undefined")
 +    target_link_libraries(tensorflow-core grpc++ ${Protobuf_LIBRARY} png jpeg gif sqlite3 re2
 +	    str_format_internal absl_str_format absl_strings absl_hash absl_int128
-+	    absl_base nsync_cpp double-conversion snappy z pthread dl)
++	    absl_base nsync_cpp grpc farmhash gmock gtest double-conversion snappy z pthread dl)
 +    install(TARGETS tensorflow-core LIBRARY DESTINATION lib)
++    install(DIRECTORY tensorflow/core/lib/jpeg/testdata DESTINATION lib/tensorflow/core/lib/jpeg/)
 +  endif(TFLITE_TESTING)
 +  add_subdirectory(tensorflow)
 +endif(TFLITE_TYPE)
@@ -284,7 +285,7 @@ index 66ba827a90..3f7aa0dc39 100644
  struct sin : base<T, Eigen::internal::scalar_sin_op<T>> {};
 diff --git a/tensorflow/lite/CMakeLists.txt b/tensorflow/lite/CMakeLists.txt
 new file mode 100644
-index 0000000000..b3622b5a5d
+index 0000000000..85ae846692
 --- /dev/null
 +++ b/tensorflow/lite/CMakeLists.txt
 @@ -0,0 +1,132 @@
@@ -417,7 +418,7 @@ index 0000000000..b3622b5a5d
 +      SET_TARGET_PROPERTIES(${tgt} PROPERTIES COMPILE_FLAGS "-DTFLITE_PROFILING_ENABLED")
 +    endif()
 +    target_link_libraries(${tgt} tensorflow-lite tensorflow-core)
-+    install(TARGETS ${tgt} DESTINATION bin)
++    install(TARGETS ${tgt} DESTINATION lib/tensorflow/lite/tests)
 +  endforeach(tst)
 +endif(${TFLITE_TESTING})
 diff --git a/tensorflow/lite/delegates/nnapi/nnapi_delegate.cc b/tensorflow/lite/delegates/nnapi/nnapi_delegate.cc
